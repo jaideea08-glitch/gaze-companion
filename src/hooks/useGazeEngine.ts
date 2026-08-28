@@ -158,6 +158,8 @@ export function useGazeEngine(
     let intent = 0;
     const el = target?.el ?? null;
     if (el !== currentTarget.current) {
+      currentTarget.current?.removeAttribute("data-gaze-hover");
+      el?.setAttribute("data-gaze-hover", "true");
       currentTarget.current = el;
       dwellStart.current = el ? now : null;
       fixation.current.reset();
