@@ -232,6 +232,7 @@ export function useGazeEngine(
 
   const setPaused = useCallback((v: boolean) => {
     pausedRef.current = v;
+    if (!runningRef.current) return;
     setState((p) => ({ ...p, status: v ? "paused" : "running", message: v ? "Paused" : "Tracking" }));
   }, []);
 
