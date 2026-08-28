@@ -36,7 +36,11 @@ export class FixationTracker {
   private pts: { p: Vec2; t: number }[] = [];
   push(p: Vec2, t: number) {
     this.pts.push({ p, t });
-    while (this.pts.length && t - this.pts[0].t > 600) this.pts.shift();
+    let head = this.pts[0];
+    while (head && t - head.t > 600) {
+      this.pts.shift();
+      head = this.pts[0];
+    }
   }
   reset() {
     this.pts = [];
@@ -50,9 +54,9 @@ export class FixationTracker {
     );
   }
   speed() {
-    if (this.pts.length < 3) return 0;
     const a = this.pts[0];
     const b = this.pts[this.pts.length - 1];
+    if (!a || !b || this.pts.length < 3) return 0;
     const dt = Math.max(0.05, (b.t - a.t) / 1000);
     return Math.hypot(b.p.x - a.p.x, b.p.y - a.p.y) / dt;
   }
