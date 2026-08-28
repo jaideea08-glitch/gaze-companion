@@ -19,6 +19,11 @@
  */
 
 @theme inline {
+  --color-gaze-ring: var(--gaze-ring);
+  --color-gaze-progress: var(--gaze-progress);
+  --color-gaze-dot: var(--gaze-dot);
+  --shadow-glow: 0 0 40px 6px color-mix(in oklab, var(--accent) 55%, transparent);
+  --font-sans: "Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
