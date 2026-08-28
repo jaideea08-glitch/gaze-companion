@@ -1,1372 +1,640 @@
-# Gaze Companion
+# 👁️ Gaze Companion
 
-Project Prompt: AI-Powered Eye-Tracking Assistive Computer Interface
+### An Open-Source Eye-Tracking Assistive Interface
 
-You are a senior software engineer, computer-vision researcher, HCI specialist, and accessibility-technology developer.
+**Gaze Companion** is an open-source assistive technology project that uses a standard webcam to track eye movement and translate gaze into computer input.
 
-I want you to design and build a complete eye-tracking assistive computer interface for people with motor impairments or disabilities that make using a conventional mouse and keyboard difficult.
+The goal is simple:
 
-The system should use a standard webcam to track the user's eyes and convert their gaze into computer input.
+> **Help people with motor impairments interact with their computer using their eyes.**
 
-However, this should not be treated as a simple "webcam eye tracker that moves a mouse."
+Gaze Companion combines computer vision, personalized calibration, gaze stabilization, intelligent cursor control, dwell interaction, and accessibility-focused features into a single system.
 
-The goal is to build an intelligent, personalized accessibility system that understands the user's gaze, learns their behavior, reduces accidental interactions, and provides alternative ways to control a computer.
+Instead of requiring users to adapt themselves to a traditional mouse and keyboard, Gaze Companion explores how a computer can **adapt to the user's abilities**.
 
-The system should ultimately support:
+---
 
-Eye movement → Gaze estimation → Personalized calibration → Gaze stabilization → Intent detection → Target recognition → Cursor control → Accessible interaction
+## ✨ Features
 
-with optional:
+### 👁️ Real-Time Eye Tracking
 
-Voice → Commands / Dictation
+Gaze Companion uses a webcam to detect and track the user's eyes in real time.
 
-1. Core Objective
+The system can estimate:
 
-Build an application that allows a person with limited or impaired motor control to interact with a computer primarily through:
+* Eye position
+* Iris/eye landmarks
+* Gaze direction
+* Head movement
+* Tracking confidence
 
-Eye movement
+No specialized eye-tracking hardware is required.
 
-Gaze
+---
 
-Dwell interaction
+### 🎯 Personalized Calibration
 
-Optional voice commands
+Everyone's eyes and natural gaze behavior are different.
 
-Optional facial/eye gestures
+Gaze Companion uses a personalized calibration process to learn the relationship between the user's gaze and their screen.
 
-The application should be designed around the principle:
+Calibration data can be stored and reused to provide a more personalized experience.
 
-The computer should adapt to the user rather than forcing the user to adapt to the computer.
+---
 
-The system should continuously attempt to make interaction:
+### 🖱️ Gaze-Controlled Cursor
 
-Accurate
+Your gaze can be translated into screen coordinates and used to control the mouse cursor.
 
-Stable
+Gaze stabilization helps reduce the natural jitter associated with webcam-based eye tracking while maintaining responsive cursor movement.
 
-Predictable
+---
 
-Forgiving
+### 🧲 Intelligent Target Snapping
 
-Low-effort
+Webcam-based gaze tracking is less precise than a traditional mouse.
 
-Customizable
+Gaze Companion can intelligently assist the user by snapping the cursor toward nearby interactive targets.
 
-Accessible
+This can make selecting buttons, links, and other interface elements easier without requiring perfect gaze precision.
 
-Safe
+---
 
-2. Target Users
+### ⏱️ Adaptive Dwell Clicking
 
-Design for users who may have:
+Gaze Companion can use **dwell clicking** instead of requiring a physical mouse button.
 
-Limited hand movement
+Look at a target for a configurable period of time and the system can activate it.
 
-Tremors
+The system can adapt dwell behavior based on interaction patterns to help balance:
 
-Slow or involuntary movements
+* Speed
+* Accuracy
+* User comfort
+* Accidental clicks
 
-Difficulty holding a mouse
+---
 
-Difficulty clicking physical buttons
+### 🛡️ Safe Mode
 
-Difficulty performing precise movements
+Looking at something does not necessarily mean that the user wants to interact with it.
 
-Limited range of motion
+**Safe Mode** allows the user to move the cursor using their gaze while disabling automatic clicking.
 
-Difficulty keeping their head completely still
+Clicking must then be deliberately activated through an available interaction method.
 
-Different eye shapes and facial structures
+This is designed to reduce accidental interactions.
 
-Glasses
+---
 
-Different seating positions
+### 🧠 Personalized Gaze Stabilization
 
-Different lighting conditions
+Different users have different natural eye-movement patterns.
 
-Different webcam qualities
+Gaze Companion can personalize cursor behavior based on the user's interaction characteristics.
 
-Fatigue during extended use
+Potential parameters include:
 
-Do not assume the user has perfect control of their eyes or head.
+* Smoothing
+* Sensitivity
+* Movement thresholds
+* Dwell duration
+* Cursor responsiveness
 
-The system should tolerate imperfect input.
+The goal is for the system to adapt to the user rather than forcing every user to use identical settings.
 
-3. High-Level Architecture
+---
 
-Design the system as modular components.
+### 👤 User Profiles
 
-A proposed architecture is:
+Gaze Companion supports personalized user profiles.
 
-                    ┌─────────────────────┐
-                    │      Webcam         │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │ Face / Eye Tracking │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │  Gaze Estimation    │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │ User Calibration    │
-                    │ & Personalization   │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │ Gaze Stabilization  │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │ Intent Prediction   │
-                    └──────────┬──────────┘
-                               │
-                 ┌─────────────┴──────────────┐
-                 ▼                            ▼
-        ┌─────────────────┐          ┌─────────────────┐
-        │ Target Detection│          │ Cursor Control  │
-        └────────┬────────┘          └────────┬────────┘
-                 │                            │
-                 └────────────┬───────────────┘
-                              ▼
-                    ┌─────────────────────┐
-                    │ Accessible Input    │
-                    │ - Dwell Click       │
-                    │ - Safe Mode         │
-                    │ - Drag              │
-                    │ - Scroll            │
-                    └──────────┬──────────┘
-                               │
-                ┌──────────────┴───────────────┐
-                ▼                              ▼
-       ┌─────────────────┐            ┌─────────────────┐
-       │ Virtual Keyboard│            │ Voice Interface │
-       └─────────────────┘            └─────────────────┘
+Profiles can store settings such as:
 
+* Calibration data
+* Cursor sensitivity
+* Smoothing
+* Dwell timing
+* Accessibility presets
+* Personalization parameters
+* Voice settings
 
-Keep the implementation modular so individual components can be improved later.
+This allows different users to use the same computer with their own configurations.
 
-4. Webcam and Computer Vision
+---
 
-Use the webcam to continuously observe the user.
+### ♿ Accessibility Presets
 
-The system should detect:
+Gaze Companion can provide accessibility presets designed around different interaction needs.
 
-Face
+| Preset                  | Purpose                               |
+| ----------------------- | ------------------------------------- |
+| **Standard**            | Balanced responsiveness and stability |
+| **Tremor-Friendly**     | Increased stabilization               |
+| **Low Precision**       | Increased target tolerance            |
+| **Slow Gaze**           | Slower movement and longer dwell      |
+| **High Responsiveness** | Faster cursor response                |
+| **Safe Interaction**    | Reduced risk of accidental activation |
 
-Eyes
+Users can also customize individual settings.
 
-Iris/pupil position where possible
+---
 
-Facial landmarks
+### 🔄 Calibration Recovery
 
-Head orientation
+Calibration accuracy can change over time due to changes in:
 
-Eye openness
+* Seating position
+* Webcam position
+* Lighting
+* User fatigue
+* Camera angle
 
-Blinking
+Gaze Companion is designed to support targeted recalibration instead of always requiring a complete calibration process.
 
-Tracking confidence
+---
 
-Investigate appropriate technologies such as:
+### 🧠 Intent-Aware Interaction
 
-OpenCV
+One of the project's long-term goals is to distinguish between:
 
-MediaPipe Face Landmarker / Face Mesh
+> **"The user is looking at something."**
 
-Iris/eye landmark tracking
+and
 
-Head-pose estimation
+> **"The user intends to interact with something."**
 
-Lightweight gaze-estimation models
+The system can consider signals such as:
 
-Other appropriate computer-vision approaches
+* Gaze stability
+* Dwell duration
+* Gaze trajectory
+* Target location
+* Tracking confidence
+* Previous interactions
 
-Do not blindly select a technology.
+The purpose is to reduce unintended actions while keeping interaction responsive.
 
-Explain the tradeoffs between different approaches.
+---
 
-Prefer local processing.
+### ⌨️ Gaze-Controlled Virtual Keyboard
 
-Camera footage should not be uploaded to a remote server by default.
+Gaze Companion can be extended into a complete communication interface through a gaze-controlled virtual keyboard.
 
-5. Personalized Calibration
+Potential capabilities include:
 
-Create an accessible calibration system.
+* Dwell typing
+* Word prediction
+* Autocomplete
+* Adaptive key sizing
+* Error correction
 
-Display large targets at different screen locations.
+This could eventually allow users to communicate without requiring a physical keyboard.
+
+---
+
+### 🎙️ Voice + Eye Tracking
+
+Gaze Companion can combine eye tracking with voice commands.
+
+The idea is:
+
+> **Eyes = Point**
+
+> **Voice = Command**
 
 For example:
 
-┌────────────────────────────────────────────┐
-│ ●                                      ●   │
-│                                            │
-│                                            │
-│ ●                 ●                        │
-│                                            │
-│                              ●             │
-│                                            │
-│ ●                       ●              ●   │
-└────────────────────────────────────────────┘
-
-
-The user looks at each target.
-
-For every target:
-
-Collect multiple gaze samples.
-
-Ignore obvious outliers.
-
-Determine tracking confidence.
-
-Associate gaze features with screen coordinates.
-
-Build a personalized gaze-to-screen mapping.
-
-Investigate:
-
-Linear regression
-
-Polynomial regression
-
-Affine transformations
-
-Homography
-
-Personalized machine-learning models
-
-Other appropriate lightweight approaches
-
-Select the best approach based on accuracy, computational cost, and robustness.
-
-6. Calibration Recovery
-
-Do not require the user to completely recalibrate every time accuracy decreases.
-
-Implement partial calibration recovery.
-
-For example:
-
-If the system determines that:
-
-Top-left     → Accurate
-Top-right    → Accurate
-Center       → Accurate
-Bottom-left  → Inaccurate
-Bottom-right → Inaccurate
-
-
-the user should be able to recalibrate only the problematic regions.
-
-The system should maintain a calibration model that can be updated incrementally.
-
-Investigate whether calibration can be continuously improved from normal user interactions without requiring explicit recalibration every time.
-
-However, do not silently learn from interactions in a way that could cause increasingly inaccurate behavior.
-
-Provide transparency and an option to disable adaptive calibration.
-
-7. Gaze Stabilization and Personalization
-
-Raw webcam gaze data will be noisy.
-
-Implement intelligent gaze stabilization.
-
-Investigate:
-
-Moving averages
-
-Exponential smoothing
-
-Low-pass filters
-
-Median filters
-
-Kalman filtering
-
-Adaptive filtering
-
-However, do not apply identical filtering to every user.
-
-Different users may naturally have different eye-movement patterns.
-
-The application should learn a user's characteristics, including:
-
-Typical gaze speed
-
-Typical micro-movements
-
-Natural fixation duration
-
-Typical jitter
-
-Head movement
-
-Gaze stability
-
-Interaction speed
-
-Use this information to personalize cursor behavior.
-
-For example:
-
-A user with naturally stable gaze might receive:
-
-High responsiveness + minimal smoothing
-
-while a user with significant gaze jitter might receive:
-
-More smoothing + larger movement thresholds
-
-The system should gradually personalize itself rather than requiring the user to manually configure every parameter.
-
-8. Intelligent Target Snapping
-
-Implement target snapping.
-
-The system should recognize when the user's gaze is close to an interactive element on the screen.
-
-For example:
-
-              Button
-        ┌─────────────────┐
-        │     SUBMIT      │
-        └─────────────────┘
-                  ↑
-              Gaze point
-
-
-If the gaze is close enough to the button, the cursor can intelligently move toward the center of the target.
-
-The objective is to compensate for small gaze-estimation errors.
-
-Investigate ways to identify targets using:
-
-Accessibility APIs
-
-Operating-system UI information
-
-Application accessibility trees
-
-Computer vision
-
-Screen analysis
-
-OCR
-
-UI element detection
-
-Prefer semantic/accessibility information when available rather than relying entirely on visual guessing.
-
-Target snapping should be:
-
-Adjustable
-
-Optional
-
-Smooth
-
-Predictable
-
-Never make snapping so aggressive that the cursor jumps to unexpected locations.
-
-9. Intent Prediction
-
-One of the most important advanced features is intent prediction.
-
-The system should attempt to distinguish between:
-
-Looking
-
-The user is simply looking at an object.
-
-versus:
-
-Intending to interact
-
-The user is deliberately trying to select or activate the object.
-
-Do not assume:
-
-"User looked at button = user wants to click button."
-
-Instead, consider multiple signals:
-
-Gaze position
-
-Gaze duration
-
-Gaze stability
-
-Movement trajectory
-
-Previous gaze location
-
-Target size
-
-Repeated fixation
-
-Dwell behavior
-
-User interaction history
-
-Optional voice command
-
-Optional facial/eye gestures
-
-Develop an intent-confidence score.
-
-For example:
-
-Gaze confidence:       94%
-Target confidence:     91%
-Intent confidence:     37%
-
-→ Do NOT click
-
-
-versus:
-
-Gaze confidence:       96%
-Target confidence:     95%
-Intent confidence:     93%
-
-→ Interaction permitted
-
-
-The exact implementation should be determined through experimentation.
-
-The system must prioritize avoiding accidental actions.
-
-10. Adaptive Dwell Clicking
-
-Implement dwell clicking.
-
-Basic behavior:
-
-User looks at target
-        ↓
-Cursor enters target
-        ↓
-Target becomes highlighted
-        ↓
-Dwell timer begins
-        ↓
-User maintains gaze
-        ↓
-Progress indicator fills
-        ↓
-Click occurs
-
-
-But make the dwell system adaptive.
-
-The application should monitor:
-
-Successful clicks
-
-Missed clicks
-
-Accidental clicks
-
-Cancelled interactions
-
-User behavior
-
-Target size
-
-Gaze stability
-
-If accidental clicks happen frequently, the system should increase the required dwell time.
-
-If the user consistently performs accurate intentional clicks, it may gradually reduce dwell time.
-
-For example:
-
-Default dwell:
-1000 ms
-
-High accidental-click rate:
-1500 ms
-
-Stable experienced user:
-700 ms
-
-
-Do not allow adaptive behavior to become unpredictable.
-
-Provide:
-
-Minimum dwell time
-
-Maximum dwell time
-
-Automatic mode
-
-Manual mode
-
-Reset personalization
-
-11. Safe Mode
-
-Implement a Safe Mode for users who frequently look at things without intending to activate them.
-
-In Safe Mode:
-
-Looking moves the cursor, but does NOT automatically click.
-
-The user must deliberately activate clicking.
-
-Possible mechanisms include:
-
-Voice command
-
-Dedicated accessibility toolbar button
-
-Specific dwell gesture
-
-Long dwell
-
-Blink pattern
-
-Eye gesture
-
-Keyboard shortcut
-
-External switch if eventually supported
-
-The user should be able to switch between:
-
-Normal Mode
-
-Gaze + dwell can interact.
-
-Safe Mode
-
-Gaze controls pointing only.
-
-Navigation Mode
-
-Gaze moves around the interface without activating targets.
-
-Make the mode clearly visible to prevent confusion.
-
-12. Accessibility Toolbar
-
-Create an optional floating accessibility toolbar.
-
-It should contain large controls for:
-
-Left click
-
-Right click
-
-Double click
-
-Drag
-
-Scroll
-
-Pause tracking
-
-Safe Mode
-
-Recalibrate
-
-Settings
-
-Exit
-
-The toolbar itself must be usable through gaze.
-
-Consider automatically hiding it when not needed.
-
-13. Scrolling
-
-Support gaze-based scrolling.
-
-Possible implementations:
-
-Edge scrolling
-
-Looking near the top/bottom edge causes scrolling.
-
-Dwell scrolling
-
-Looking at a scroll control for a specified period scrolls.
-
-Toolbar scrolling
-
-Use explicit large buttons.
-
-Allow users to choose their preferred method.
-
-14. Drag-and-Drop
-
-Implement accessible drag-and-drop.
-
-A possible interaction:
-
-Look at object
-      ↓
-Select / dwell
-      ↓
-Enter drag mode
-      ↓
-Move gaze
-      ↓
-Object follows cursor
-      ↓
-Activate release
-
-
-Make this optional.
-
-If direct gaze-based dragging is unreliable, provide an explicit "Drag Mode" rather than pretending the normal mouse interaction model works perfectly with gaze.
-
-15. Gaze-Controlled Virtual Keyboard
-
-Build toward a gaze-controlled virtual keyboard.
-
-The keyboard should contain large, accessible keys.
-
-Example:
-
-┌────┬────┬────┬────┬────┬────┬────┬────┬────┬────┐
-│ Q  │ W  │ E  │ R  │ T  │ Y  │ U  │ I  │ O  │ P  │
-├────┼────┼────┼────┼────┼────┼────┼────┼────┼────┤
-│ A  │ S  │ D  │ F  │ G  │ H  │ J  │ K  │ L  │ ←  │
-├────┼────┼────┼────┼────┼────┼────┼────┼────┼────┤
-│ Z  │ X  │ C  │ V  │ B  │ N  │ M  │SPACE│ ⏎ │    │
-└────┴────┴────┴────┴────┴────┴────┴────┴────┴────┘
-
-
-Investigate:
-
-Dwell typing
-
-Word prediction
-
-Auto-completion
-
-Larger dynamic targets
-
-Adaptive key sizing
-
-Error correction
-
-Next-letter prediction
-
-The keyboard should eventually support communication and general computer use.
-
-16. Voice + Eye Tracking
-
-Integrate optional voice interaction.
-
-The concept should be:
-
-Eyes = Point
-
-Voice = Command
-
-For example:
-
+```text
 "Click"
-
 "Double click"
-
 "Scroll down"
-
-"Open"
-
 "Go back"
-
-"Type hello"
-
 "Start calibration"
-
 "Pause tracking"
-
 "Enable safe mode"
+"Type hello"
+```
 
-Voice should complement eye tracking rather than replace it.
+Combining multiple input methods can reduce the amount of precision required from either one individually.
 
-Allow users to disable voice functionality.
+---
 
-Consider offline speech recognition where practical.
+# 🧩 How It Works
 
-17. User Profiles
+At a high level:
 
-Implement multiple user profiles.
+```text
+             ┌──────────────┐
+             │    Webcam    │
+             └──────┬───────┘
+                    │
+                    ▼
+          ┌───────────────────┐
+          │ Face / Eye Tracking│
+          └─────────┬─────────┘
+                    │
+                    ▼
+          ┌───────────────────┐
+          │  Gaze Estimation  │
+          └─────────┬─────────┘
+                    │
+                    ▼
+          ┌───────────────────┐
+          │    Calibration    │
+          └─────────┬─────────┘
+                    │
+                    ▼
+          ┌───────────────────┐
+          │ Gaze Stabilization│
+          └─────────┬─────────┘
+                    │
+                    ▼
+          ┌───────────────────┐
+          │ Target / Intent   │
+          │    Detection      │
+          └─────────┬─────────┘
+                    │
+                    ▼
+          ┌───────────────────┐
+          │ Cursor & Input    │
+          │     Control       │
+          └───────────────────┘
+```
 
-Each profile can store:
+Additional interaction layers can include:
 
-Calibration data
+```text
+        👁️ Gaze
+          │
+          ├──────► Cursor
+          │
+          ├──────► Dwell Click
+          │
+          ├──────► Target Selection
+          │
+          └──────► Virtual Keyboard
 
-Screen configuration
+        🎙️ Voice
+          │
+          ├──────► Commands
+          └──────► Dictation
+```
 
-Cursor sensitivity
+---
 
-Smoothing
+# 🚀 Getting Started
 
-Dwell timing
+## Requirements
 
-Accessibility preset
+You will need:
 
-Target snapping
+* A computer with a webcam
+* Python 3.x
+* A supported operating system
+* Adequate lighting
+* The dependencies listed in `requirements.txt`
 
-Voice settings
+A dedicated eye-tracking device is **not required**.
 
-Safe Mode preference
+---
 
-Keyboard configuration
+## Installation
 
-Personalization parameters
+Clone the repository:
 
-Example:
+```bash
+git clone https://github.com/jaideea08-glitch/Gaze-Companion.git
+cd Gaze-Companion
+```
 
-Profiles
+Create a virtual environment:
 
-> User 1
-> User 2
-> Guest
-> Create New Profile
+### Windows
 
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
 
-Profile data should be stored locally and securely.
+### macOS / Linux
 
-18. Accessibility Presets
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
 
-Provide predefined profiles.
+Install dependencies:
 
-For example:
+```bash
+pip install -r requirements.txt
+```
 
-Standard
+---
 
-Balanced responsiveness and smoothing.
+## ▶️ Running Gaze Companion
 
-Tremor-Friendly
+Start the application:
 
-More stabilization and larger target tolerance.
+```bash
+python main.py
+```
 
-Low-Precision
+Follow the on-screen calibration instructions.
 
-Strong target snapping and larger interaction zones.
+Once calibration is complete, gaze can be used to control the cursor and available accessibility features.
 
-Slow Gaze
+---
 
-Longer dwell periods and slower cursor movement.
+# 🎯 Calibration
 
-High Responsiveness
+For best results:
 
-Minimal filtering and faster movement.
+1. Sit comfortably in your normal position.
+2. Position the webcam so your face is clearly visible.
+3. Make sure your eyes are adequately illuminated.
+4. Complete the calibration process.
+5. Follow each calibration target with your eyes.
+6. Avoid unnecessary head movement during calibration.
+7. Test the resulting gaze accuracy.
 
-Safe Interaction
+If your setup changes significantly, recalibration may improve accuracy.
 
-Strict intent detection and minimal automatic clicking.
+---
 
-Users should also be able to customize these presets.
+# ⚙️ Configuration
 
-19. Multiple Monitor Support
+Gaze Companion is designed to be highly customizable.
 
-Support multiple monitors if technically feasible.
+Depending on the current implementation, settings may include:
 
-Allow:
+```text
+Cursor Sensitivity
+Gaze Smoothing
+Dwell Duration
+Target Snapping
+Safe Mode
+Tracking Confidence
+Accessibility Preset
+Voice Controls
+```
 
-Primary monitor only
+The objective is to let users find an interaction style that works for them.
 
-Specific monitor
+---
 
-Entire virtual desktop
+# 🔒 Privacy
 
-Clearly explain limitations for each operating system.
+Privacy is an important part of Gaze Companion.
 
-20. Privacy
-
-Privacy is a fundamental requirement.
+The project is designed around local processing whenever possible.
 
 The application should:
 
-Process webcam footage locally.
+* Process webcam data locally.
+* Avoid storing raw webcam footage.
+* Avoid uploading camera footage.
+* Store only necessary calibration information.
+* Allow users to manage their profiles.
+* Allow users to disable adaptive features.
 
-Never upload camera footage by default.
+Any future cloud functionality should be explicitly opt-in.
 
-Avoid storing raw video.
+---
 
-Store only necessary calibration/personalization data.
+# ♿ Accessibility Philosophy
 
-Explain what data is being used.
+Gaze Companion is not intended to simply demonstrate that a webcam can track someone's eyes.
 
-Allow users to delete stored profiles.
+It is an exploration of **assistive human-computer interaction**.
 
-Allow users to disable adaptive learning.
+Traditional computer interfaces assume that users can accurately control a mouse.
 
-If cloud AI services are ever introduced, they must be explicitly opt-in.
+Gaze Companion explores a different approach:
 
-21. Safety
+> **What if the computer adapted to the user's physical abilities?**
 
-This is assistive software, so uncontrolled input could be harmful or extremely frustrating.
+The project focuses on reducing the physical precision and effort required to interact with a computer.
 
-Implement:
+Core principles include:
 
-Emergency Stop
+* Reduce accidental actions
+* Reduce required physical movement
+* Allow personalization
+* Make interactions forgiving
+* Prioritize stability
+* Make mistakes easy to recover from
+* Keep the user in control
 
-A reliable way to immediately disable cursor control.
+---
 
-Pause
+# 🧪 Project Status
 
-Freeze gaze-based input temporarily.
+**Status: ****`Experimental / Alpha`**
 
-Tracking Lost
+Gaze Companion is an actively developing project.
 
-Freeze the cursor rather than moving randomly.
+The current implementation should be considered an experimental prototype and **not a certified medical or clinical device**.
 
-Low Confidence
+Performance can vary depending on:
 
-Prevent interaction when gaze confidence is too low.
+* Webcam quality
+* Lighting
+* User position
+* Screen size
+* Eye characteristics
+* Head movement
+* Computer performance
+* Software configuration
 
-Safe Mode
+---
 
-Disable automatic clicking.
+# 🗺️ Roadmap
 
-Confirmation
+## Core Eye Tracking
 
-For potentially destructive actions, investigate whether additional confirmation is appropriate.
+* [x] Webcam tracking
+* [x] Eye detection
+* [x] Gaze estimation
+* [x] Calibration
+* [x] Cursor control
+* [x] Gaze stabilization
+* [ ] Improved gaze accuracy
+* [ ] Multi-monitor support
 
-The application should never prioritize automation over user control.
+## Accessibility
 
-22. Performance
+* [x] Dwell clicking
+* [x] Safe Mode
+* [ ] Adaptive dwell
+* [ ] Accessibility presets
+* [ ] Advanced target snapping
+* [ ] Gaze-based scrolling
+* [ ] Accessible drag-and-drop
 
-Aim for:
+## Personalization
 
-20–30+ FPS
+* [x] User profiles
+* [ ] Personalized gaze filtering
+* [ ] Adaptive gaze stabilization
+* [ ] Calibration recovery
+* [ ] Continuous calibration
+* [ ] Personalized intent prediction
 
-Low input latency
+## Communication
 
-Stable cursor movement
+* [ ] Gaze-controlled virtual keyboard
+* [ ] Word prediction
+* [ ] Autocomplete
+* [ ] Text-to-speech
+* [ ] Speech-to-text
+* [ ] Voice commands
 
-Reasonable CPU usage
+## Intelligent Interaction
 
-Low memory usage
+* [ ] Semantic UI target detection
+* [ ] Accessibility API integration
+* [ ] Context-aware target snapping
+* [ ] Improved intent prediction
+* [ ] Personalized interaction models
 
-Optimize intelligently.
+---
 
-Investigate:
+# 🧪 Testing & Evaluation
 
-Reduced camera resolution
+A major goal of the project is to evaluate the system using measurable metrics.
 
-Region-of-interest tracking
+Potential metrics include:
 
-Running expensive detection less frequently
+| Metric                | Purpose                                            |
+| --------------------- | -------------------------------------------------- |
+| **Gaze Accuracy**     | How accurately gaze maps to the screen             |
+| **Calibration Error** | Difference between intended and predicted position |
+| **Cursor Latency**    | Delay between gaze movement and cursor movement    |
+| **Cursor Jitter**     | Unwanted movement during fixation                  |
+| **False Click Rate**  | Unintended activations                             |
+| **Missed Click Rate** | Failed intentional activations                     |
+| **Selection Time**    | Time required to select a target                   |
+| **Tracking Recovery** | Time required to recover from lost tracking        |
 
-Reusing models
+Testing should include different:
 
-Lightweight inference
+* Users
+* Webcams
+* Lighting conditions
+* Seating distances
+* Screen resolutions
+* Monitor configurations
+* Levels of gaze stability
 
-Hardware acceleration where available
+---
 
-Measure actual performance rather than assuming it.
+# ⚠️ Limitations
 
-23. Testing
+Webcam-based eye tracking has inherent limitations.
 
-Develop a serious testing methodology.
+It is generally less accurate than dedicated infrared eye-tracking hardware.
 
-Measure:
+Potential challenges include:
 
-Accuracy
+* Poor lighting
+* Reflections from glasses
+* Low-quality webcams
+* Head movement
+* Eye occlusion
+* Individual differences
+* Calibration drift
+* Gaze-estimation noise
+* Cursor jitter
+* User fatigue
 
-How close is gaze estimation to the intended target?
+These limitations are an important part of the problem Gaze Companion is attempting to solve.
 
-Calibration Error
+---
 
-Average distance between intended and predicted gaze coordinates.
+# 🤝 Contributing
 
-Latency
+Contributions are welcome.
 
-How long between eye movement and cursor response?
+Areas where contributions could be particularly valuable include:
 
-Jitter
+* 👁️ Computer vision
+* 🧠 Machine learning
+* ♿ Accessibility
+* 🖥️ Human-computer interaction
+* 🎨 UI/UX
+* ⚡ Performance optimization
+* 🧪 Testing
+* 📝 Documentation
+* 🖥️ Cross-platform support
 
-How much does the cursor move while the user maintains fixation?
+If you have an idea that could make Gaze Companion more accessible, reliable, or usable, feel free to open an issue or submit a pull request.
 
-False Click Rate
+When contributing, please keep the project's accessibility goals at the center of the design.
 
-How often does the system click when the user did not intend to?
+---
 
-Missed Click Rate
+# 💡 Research & Future Ideas
 
-How often does an intended click fail?
+Gaze Companion is also intended to serve as a platform for exploring questions around accessible human-computer interaction.
 
-Target Selection Time
+Some areas of interest include:
 
-How long does it take to successfully select an object?
+* Can inexpensive webcams provide sufficiently accurate gaze input?
+* Can personalized models significantly improve accuracy?
+* Can semantic UI understanding make gaze interaction easier?
+* How can computers distinguish between looking and intending?
+* How can accidental clicks be minimized?
+* Can voice and gaze create a more effective multimodal interface?
+* Can interfaces dynamically adapt to a user's abilities?
+* Can gaze-based interaction reduce the physical effort required to use a computer?
 
-Tracking Recovery
+---
 
-How quickly does the system recover after losing the face?
+# ⚖️ Disclaimer
 
-User Fatigue
+Gaze Companion is an **open-source experimental project**.
 
-Investigate whether the interaction becomes tiring over time.
+It is **not a medical device, diagnostic tool, or certified assistive-technology product**.
 
-Test under:
+Do not rely on Gaze Companion for safety-critical applications.
 
-Different lighting
+Users should always have a reliable method of disabling gaze-controlled input.
 
-Different webcams
+---
 
-Glasses
+# 📄 License
 
-Different distances
+This project is licensed under the **[CHOOSE LICENSE]** license.
 
-Different users
+See `LICENSE` for details.
 
-Different screen sizes
+---
 
-Different resolutions
+# ⭐ Support Gaze Companion
 
-Different monitor configurations
+If you find the project interesting:
 
-Small head movements
+⭐ **Star the repository**
 
-Different levels of gaze stability
+🐛 **Report bugs**
 
-24. Important Human-Factors Requirement
+💡 **Suggest features**
 
-Do not optimize purely for numerical accuracy.
+🔧 **Submit improvements**
 
-A system can have excellent gaze-estimation accuracy and still be terrible to use.
+📖 **Improve documentation**
 
-Evaluate:
+🧪 **Test it with different hardware**
 
-Comfort
+♿ **Provide accessibility feedback**
 
-Predictability
+The most valuable contributions are those that help make Gaze Companion **more reliable and more usable for people who need alternative ways to interact with computers.**
 
-Cognitive load
+---
 
-Accidental activation
+# 👁️ Gaze Companion
 
-User fatigue
+### **A different way to interact with your computer.**
 
-Learning curve
-
-Calibration difficulty
-
-Interaction speed
-
-Error recovery
-
-The ultimate metric is:
-
-Can a person with limited motor control comfortably and reliably use the computer?
-
-25. Development Phases
-
-Do not generate the entire project as one giant code dump.
-
-Develop incrementally.
-
-Phase 1 — Requirements & Architecture
-
-Before coding, ask me questions about:
-
-Target OS
-
-Hardware
-
-Webcam
-
-Intended users
-
-Programming language
-
-Offline requirements
-
-Privacy
-
-Accuracy goals
-
-Prototype vs production
-
-Single vs multiple monitors
-
-Voice requirements
-
-Virtual keyboard requirements
-
-Also suggest improvements I have not considered.
-
-Phase 2 — Basic Eye Tracking
-
-Build:
-
-Webcam capture
-
-Face detection
-
-Eye tracking
-
-Iris/landmark tracking
-
-Head pose
-
-Gaze visualization
-
-Confidence measurement
-
-The application should visually show what it believes the user is looking at.
-
-Phase 3 — Calibration
-
-Implement:
-
-Multi-point calibration
-
-Outlier rejection
-
-Personalized mapping
-
-Calibration quality scoring
-
-Calibration persistence
-
-Phase 4 — Cursor Control
-
-Implement:
-
-Gaze-to-screen mapping
-
-Cursor movement
-
-Smoothing
-
-Sensitivity
-
-Movement thresholds
-
-Phase 5 — Personalization
-
-Implement:
-
-User profiles
-
-Gaze stabilization learning
-
-Personalized filtering
-
-Accessibility presets
-
-Phase 6 — Intelligent Interaction
-
-Implement:
-
-Target snapping
-
-Target recognition
-
-Intent prediction
-
-Confidence scoring
-
-Phase 7 — Accessible Clicking
-
-Implement:
-
-Dwell clicking
-
-Adaptive dwell
-
-Safe Mode
-
-Click toolbar
-
-Double click
-
-Right click
-
-Phase 8 — Advanced Interaction
-
-Implement:
-
-Scrolling
-
-Drag-and-drop
-
-Virtual keyboard
-
-Voice commands
-
-Phase 9 — Adaptive Calibration
-
-Implement:
-
-Calibration recovery
-
-Partial recalibration
-
-Optional continuous personalization
-
-Phase 10 — Testing & Optimization
-
-Measure:
-
-Accuracy
-
-Latency
-
-False clicks
-
-Missed clicks
-
-CPU usage
-
-Tracking stability
-
-User experience
-
-Phase 11 — Packaging
-
-Provide instructions for creating a standalone application.
-
-Explain:
-
-Installation
-
-Dependencies
-
-Webcam permissions
-
-OS permissions
-
-Configuration
-
-Profile storage
-
-Troubleshooting
-
-26. Code Quality
-
-Do not create a single massive script.
-
-Use a modular architecture such as:
-
-eye_assist/
-│
-├── main.py
-│
-├── camera/
-│   ├── camera_manager.py
-│   └── frame_processor.py
-│
-├── vision/
-│   ├── face_tracker.py
-│   ├── eye_tracker.py
-│   ├── gaze_estimator.py
-│   └── head_pose.py
-│
-├── calibration/
-│   ├── calibration_manager.py
-│   ├── gaze_mapper.py
-│   └── calibration_recovery.py
-│
-├── personalization/
-│   ├── user_profile.py
-│   ├── adaptive_filter.py
-│   └── learning.py
-│
-├── interaction/
-│   ├── cursor_controller.py
-│   ├── dwell_controller.py
-│   ├── target_snapping.py
-│   ├── intent_predictor.py
-│   └── drag_controller.py
-│
-├── accessibility/
-│   ├── toolbar.py
-│   ├── virtual_keyboard.py
-│   ├── presets.py
-│   └── safe_mode.py
-│
-├── voice/
-│   └── voice_controller.py
-│
-├── ui/
-│   ├── main_window.py
-│   ├── calibration_ui.py
-│   └── settings_ui.py
-│
-├── storage/
-│   └── profile_manager.py
-│
-└── tests/
-
-
-Adapt this structure if you determine a better architecture.
-
-27. Explain Technical Decisions
-
-For every major technology or algorithm, explain:
-
-What it does
-
-Why it was selected
-
-Alternatives considered
-
-Advantages
-
-Disadvantages
-
-Expected accuracy
-
-Computational requirements
-
-Accessibility implications
-
-Do not simply generate code without explaining the engineering decisions.
-
-28. Future Research Directions
-
-After the MVP is working, investigate advanced possibilities such as:
-
-Deep-learning gaze estimation
-
-Personalized neural models
-
-Adaptive calibration
-
-Continuous calibration
-
-UI semantic understanding
-
-Accessibility API integration
-
-Computer-vision UI recognition
-
-OCR
-
-Predictive target selection
-
-Gaze-aware UI enlargement
-
-Context-aware target snapping
-
-Advanced intent prediction
-
-Blink/wink controls
-
-Facial gestures
-
-Voice + gaze multimodal interaction
-
-Eye-controlled communication systems
-
-Assistive text prediction
-
-Personalized interaction models
-
-Clearly separate features that are practical for the MVP from features requiring significant research.
-
-29. Critical Requirement: Think Beyond My Ideas
-
-Do not limit yourself to the features listed in this prompt.
-
-You are expected to actively identify problems I have not considered.
-
-For example, investigate:
-
-What happens when the user becomes fatigued?
-
-What happens if their gaze naturally drifts?
-
-How should the system handle involuntary eye movements?
-
-How can accidental clicks be minimized?
-
-How can the system prevent cursor oscillation around a target?
-
-How should it behave when the user looks between two buttons?
-
-How should it handle menus appearing dynamically?
-
-How should it work with web browsers?
-
-How can it interact with applications that do not expose accessibility information?
-
-How can it distinguish intentional interaction from normal reading?
-
-How can users recover from mistakes without needing a physical mouse?
-
-How can the UI itself be operated entirely through gaze?
-
-How should the system behave when the webcam loses the user's eyes?
-
-How can user fatigue be detected?
-
-How can the interface adapt to different users without becoming unpredictable?
-
-Propose solutions to these problems.
-
-30. First Response Requirement
-
-Do NOT start coding immediately.
-
-Your first response should be a requirements and architecture discussion.
-
-Ask me the most important questions needed to finalize the project.
-
-Then provide:
-
-Your recommended technology stack
-
-Proposed architecture
-
-MVP feature set
-
-Advanced feature set
-
-Major technical risks
-
-Accessibility risks
-
-Proposed testing methodology
-
-Additional features you recommend
-
-After I answer your questions, refine the architecture.
-
-Then begin implementation one phase at a time, ensuring every phase works before moving to the next.
-
-The final goal is not merely to demonstrate eye tracking.
-
-The goal is to create a usable, personalized, intelligent assistive computer-control system for people who cannot reliably use a conventional mouse and keyboard.
-
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/dd9e3ed2-e3df-43fe-ba9f-20aeaeb66e2c).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+**Eyes → Intent → Interaction**
